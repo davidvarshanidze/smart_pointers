@@ -1,5 +1,3 @@
-SCOPIC JOB PREP
-
 Smart pointers (std::unique_ptr) C++11
 what are they: smart pointer is an object that lives on stack behaves like raw pointer but automatically manages memory
 how they work: Smart pointers store a raw pointer to dynamically allocated memory. They overload the * and -> operators to behave like normal pointers. When the smart pointer goes out of scope, it automatically deletes the allocated memory.
@@ -50,3 +48,40 @@ Weak Pointer
 A weak_ptr does not control the lifetime of the object. It is used to avoid cyclic dependencies in shared_ptr usage.
 ✔ Prevents memory leaks in cyclic dependencies.
 ✖ Does not prevent the object from being destroyed.
+
+How Smart Pointers Prevent Bugs Like Double Deletion and Dangling Pointers
+
+One of the biggest dangers of raw pointers in C++ is manual memory management mistakes—like double deletion, memory leaks, and dangling pointers. Smart pointers solve these problems automatically.
+
+1. The Problem: Double Deletion
+A double deletion happens when delete is called twice on the same pointer, causing undefined behavior (often crashes).
+🚨 Danger: The second delete tries to free already-freed memory, causing crashes or memory corruption.
+Solution with Smart Pointers
+A unique_ptr automatically deletes the memory when it goes out of scope and prevents double deletion.
+✔ Safe: No chance of calling delete twice.
+
+2. The Problem: Dangling Pointers
+A dangling pointer happens when a pointer still points to freed memory.
+Accessing it leads to undefined behavior (crashes or data corruption).
+🚨 Danger: p is pointing to deleted memory!
+Solution with Smart Pointers
+A smart pointer automatically frees memory and prevents access to invalid memory.
+✔ Safe: The memory is never accessed after deletion.
+
+3. The Problem: Memory Leaks
+A memory leak happens when memory is allocated but never freed, causing the program to use more and more memory over time.
+🚨 Danger: The program will consume all memory and eventually crash.
+Solution with Smart Pointers
+A smart pointer automatically deallocates memory when it goes out of scope.
+✔ Safe: The memory is freed every time no_leak() returns.
+
+4. The Problem: Shared Ownership and Cyclic References
+shared_ptr uses reference counting, so when the last shared_ptr goes out of scope, the object is deleted.
+✔ Safe: Foo is deleted only once.
+
+The Problem: Cyclic References (Memory Leak)
+A cycle can form when two shared_ptrs reference each other, preventing deletion.
+🚨 Danger: a1 and a2 are never deleted because they hold strong references to each other.
+Solution: Use weak_ptr
+A weak_ptr does not increase the reference count, breaking the cycle.
+✔ Safe: No memory leak!
