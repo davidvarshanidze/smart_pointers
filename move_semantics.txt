@@ -1,0 +1,13 @@
+Move semantics is a feature in C++11 that allows you to transfer ownership of resources from one object to another, rather than copying them.
+This is particularly useful for smart pointers like unique_ptr, where copying is not allowed
+
+How it works:
+The std::move function is used to convert an object into an rvalue reference, which signals that its resources can be "moved" to another object.
+The original object is then left in a valid but indeterminate state
+
+Benefits:
+Move semantics can improve performance by avoiding unnecessary copying of large objects.
+
+In essence, smart pointers automate memory management in C++, reducing the risk of memory leaks and improving code reliability.
+unique_ptr offers exclusive ownership, while shared_ptr allows shared ownership through reference counting.
+Move semantics further enhance efficiency by enabling the transfer of resources between objects
