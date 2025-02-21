@@ -85,3 +85,106 @@ A cycle can form when two shared_ptrs reference each other, preventing deletion.
 Solution: Use weak_ptr
 A weak_ptr does not increase the reference count, breaking the cycle.
 ✔ Safe: No memory leak!
+
+=================================================================================================================================================================================
+
+Move semantics is a key feature introduced in C++11 that allows for more efficient transfer of resources (like memory or ownership of objects) between variables.
+It helps avoid unnecessary copies of objects, which can be expensive, especially for large data structures, by allowing resources to be moved instead of copied.
+
+Basic Concepts of Move Semantics
+Copy Semantics: When you copy an object, you create a duplicate of that object. This involves copying all of its data.
+This can be expensive if the object contains a lot of data or manages resources like dynamic memory, file handles, or network connections.
+
+Move Semantics: When you "move" an object, you transfer ownership of the resources it manages from one object to another. This doesn’t involve copying the data, just reassigning ownership.
+The original object is left in a valid but unspecified state, often called a "moved-from" state.
+
+Why Move Semantics?
+Efficiency: By moving resources instead of copying them, you avoid unnecessary memory allocations and copies, improving performance,
+especially when dealing with large objects like containers, strings, or unique resources.
+
+Memory Management: Move semantics allows objects that manage memory or other resources (e.g., file handles)
+to efficiently pass ownership between objects without needing to reallocate or copy the resource.
+
+Move Constructor and Move Assignment Operator
+For move semantics to work, you need to define a move constructor and/or move assignment operator for your class. These functions define how an object’s resources are transferred to another object.
+
+Move Constructor
+The move constructor transfers ownership of resources from one object to another. It "steals" the resources of the original object, leaving it in a valid but unspecified state.
+
+***
+
+The Role of std::move
+The std::move function is used to cast an object to an rvalue reference, indicating that the object can be moved (i.e., it’s okay to transfer its resources).
+Without std::move, C++ would perform a copy operation instead of a move.
+
+When to Use Move Semantics:
+Containers: When working with large objects (like containers), move semantics ensures that data is transferred without unnecessary copies.
+Returning Objects from Functions: When returning large objects, you can return them using move semantics to avoid copying.
+Efficient Memory Management: Move semantics are crucial when handling dynamic memory, file handles, or other resources that should not be duplicated unnecessarily.
+
+=================================================================================================================================================================================
+
+1. Rvalue References
+Before understanding perfect forwarding, it’s important to understand rvalue references, which were introduced in C++11.
+Rvalue references allow you to distinguish between lvalues (objects that have a persistent address) and rvalues (temporary objects that don't have a persistent address).
+
+Lvalue: An object that has a name and occupies a specific memory location.
+Rvalue: A temporary object that is not tied to a specific memory location (e.g., the result of an expression).
+
+Syntax of Rvalue References:
+int a = 10;  // 'a' is an lvalue
+int&& b = 20; // '20' is an rvalue, and 'b' is an rvalue reference
+int&& b is an rvalue reference to an int.
+int& b would be an lvalue reference to an int.
+
+Why Use Rvalue References?
+Rvalue references are used to enable move semantics and allow the efficient transfer of resources (like dynamic memory) from one object to another without unnecessary copies.
+
+2. Perfect Forwarding
+Perfect forwarding is a technique that allows you to forward function arguments exactly as they are passed (whether they are lvalues or rvalues) without unnecessary copies or moves.
+This is especially useful when writing generic functions (e.g., in templates) that pass arguments to other functions while preserving their value categories (lvalue or rvalue).
+
+Key Idea of Perfect Forwarding:
+The goal is to forward the arguments to another function while preserving their value category—whether the argument is an lvalue or an rvalue.
+This ensures that if the argument is an rvalue, it will be moved, and if it is an lvalue, it will be copied.
+
+How Does Perfect Forwarding Work?
+Perfect forwarding requires the combination of rvalue references (T&&) and std::forward to pass the arguments efficiently while preserving their value category.
+
+Syntax of Perfect Forwarding:
+template <typename T>
+void func(T&& arg) {
+    // Forward the argument to another function
+    anotherFunction(std::forward<T>(arg));
+}
+T&& arg is a universal reference (a reference that can bind to both lvalues and rvalues).
+std::forward<T>(arg) is used to perfectly forward the argument to anotherFunction while preserving its value category.
+
+Why Use std::forward?
+The std::forward function is crucial because it ensures that:
+
+If arg was passed as an lvalue, std::forward<T>(arg) will forward it as an lvalue.
+If arg was passed as an rvalue, std::forward<T>(arg) will forward it as an rvalue.
+Without std::forward, you would lose the distinction between lvalues and rvalues, resulting in unnecessary copies.
+
+Lvalue Forwarding:
+
+In the first call to wrapper(obj), obj is an lvalue.
+std::forward<T>(arg) ensures that arg is forwarded as an lvalue, so func receives the lvalue and does not move it.
+Rvalue Forwarding:
+
+In the second call to wrapper(MyClass(100)), the temporary object MyClass(100) is an rvalue.
+std::forward<T>(arg) forwards the rvalue correctly, allowing func to take advantage of move semantics, avoiding a copy.
+
+3. std::move vs std::forward
+std::move: This is used to cast an object to an rvalue reference (indicating that it can be moved). It's used in move semantics when you want to explicitly mark an object as ready to be moved.
+
+SUMMARY
+
+Rvalue References allow you to distinguish between lvalues and rvalues, enabling move semantics.
+Perfect Forwarding allows you to forward arguments to other functions while preserving their value category (lvalue or rvalue), using std::forward to ensure efficient and correct handling of resources.
+std::move is used to explicitly cast an object as an rvalue to allow moving its resources.
+std::forward is used in template functions to forward arguments exactly as they were passed, enabling move semantics for rvalues and copy semantics for lvalues.
+
+Perfect forwarding and rvalue references are especially useful in generic programming,
+ensuring that functions are efficient and maintain the intended behavior when dealing with both temporary and non-temporary objects.
