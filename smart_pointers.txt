@@ -1,3 +1,10 @@
+C++98	std::auto_ptr (deprecated in C++11)
+C++11	std::unique_ptr, std::shared_ptr, std::weak_ptr, std::make_shared, std::make_unique (from C++14)
+C++14	std::make_unique (finally added)
+C++17	std::shared_ptr with arrays, std::allocate_shared improvements
+C++20	std::unique_ptr now supports arrays without needing a custom deleter
+C++23	std::out_ptr (from <boost/out_ptr.hpp>, but not part of <memory> itself)
+
 Smart pointers (std::unique_ptr) C++11
 what are they: smart pointer is an object that lives on stack behaves like raw pointer but automatically manages memory
 how they work: Smart pointers store a raw pointer to dynamically allocated memory. They overload the * and -> operators to behave like normal pointers. When the smart pointer goes out of scope, it automatically deletes the allocated memory.
