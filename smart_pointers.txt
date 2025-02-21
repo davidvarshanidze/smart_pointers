@@ -1,0 +1,52 @@
+SCOPIC JOB PREP
+
+Smart pointers (std::unique_ptr) C++11
+what are they: smart pointer is an object that lives on stack behaves like raw pointer but automatically manages memory
+how they work: Smart pointers store a raw pointer to dynamically allocated memory. They overload the * and -> operators to behave like normal pointers. When the smart pointer goes out of scope, it automatically deletes the allocated memory.
+
+A raw pointer is just a variable that holds an address in memory. It does not do anything beyond storing a memory location.
+A smart pointer wraps a raw pointer inside an object and provides additional behavior.
+
+Why is it an Object?
+Because it encapsulates:
+1. A raw pointer (like int*).
+2. A destructor that automatically deletes the pointer.
+3. Operator overloads (*, ->) to make it behave like a pointer.
+Key Differences from a Raw Pointer
+✔ Encapsulates a pointer inside an object. ✔ Automatically deletes memory in the destructor. ✔ Overloads * and ->, so it behaves like a pointer. ✔ Prevents copy operations to avoid accidental double deletion.
+Why Not Just Use Raw Pointers?
+* Raw pointers require manual memory management (new / delete).
+* Smart pointers automate cleanup and prevent memory leaks.
+By making smart pointers objects, C++ enforces RAII (Resource Acquisition Is Initialization), ensuring proper cleanup.
+
+4 Types of smart pointers
+std::unique_ptr
+std::shared_ptr
+std::weak_ptr
+std::auto_ptr
+
+Smart Pointer	Ownership Model	When is Memory Freed?
+std::unique_ptr	Exclusive ownership (only one owner)	When the unique_ptr goes out of scope
+std::shared_ptr	Shared ownership (multiple owners)	When the last shared_ptr reference goes out of scope
+std::weak_ptr	Non-owning reference to a shared_ptr	Does not control memory, used to prevent cyclic dependencies
+
+Unique Pointers
+
+A unique_ptr is a stack-allocated object that manages heap memory and cannot be copied.
+✔ No need to call delete manually!
+✖ Cannot be copied, only moved (std::move())
+
+Shared Pointer
+
+A shared_ptr allows multiple smart pointers to share ownership of the same object. It uses reference counting to track the number of owners.
+✔ Reference counting ensures memory is freed when the last owner disappears.
+✖ Slight performance overhead due to reference counting.
+
+✔ Reference counting ensures memory is freed when the last owner disappears.
+✖ Slight performance overhead due to reference counting.
+
+Weak Pointer
+
+A weak_ptr does not control the lifetime of the object. It is used to avoid cyclic dependencies in shared_ptr usage.
+✔ Prevents memory leaks in cyclic dependencies.
+✖ Does not prevent the object from being destroyed.
